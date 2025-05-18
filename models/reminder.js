@@ -1,20 +1,23 @@
 module.exports = (sequelize, DataTypes) => {
   const Reminder = sequelize.define("Reminder", {
     time: {
-      type: DataTypes.TIME,
+      type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        is: /^((Mon|Tue|Wed|Thu|Fri|Sat|Sun) )?\d{2}:\d{2}$/,
+      },
     },
     activity: {
       type: DataTypes.STRING,
       allowNull: false,
     },
     recurrence: {
-      type: DataTypes.STRING, // daily, weekly, etc. or cron-like
+      type: DataTypes.STRING,
       defaultValue: "daily",
     },
     status: {
       type: DataTypes.BOOLEAN,
-      defaultValue: true, // active by default
+      defaultValue: true,
     },
   });
 

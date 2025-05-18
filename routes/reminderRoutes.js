@@ -5,11 +5,13 @@ const authenticateToken = require("../middleware/authenticateToken");
 
 // GET /api/reminders - Get all reminders for the current user
 router.get("/", authenticateToken, async (req, res) => {
-  const userId = req.user.id; // Extract user ID from the decoded JWT
+  const userId = req.user.id;
 
   try {
-    // Fetch reminders for the current user
-    const reminders = await Reminder.findAll({ where: { userId } });
+    const reminders = await Reminder.findAll({
+      where: { userId },
+      order: [["id", "ASC"]],
+    });
     return res.status(200).json(reminders);
   } catch (err) {
     console.error(err);
@@ -23,7 +25,7 @@ router.get("/", authenticateToken, async (req, res) => {
 router.post("/", authenticateToken, async (req, res) => {
   const { time, activity, recurrence, status } = req.body;
   const userId = req.user.id;
-  // 1. Basic validation
+
   if (!time || !activity) {
     return res
       .status(400)
@@ -31,7 +33,6 @@ router.post("/", authenticateToken, async (req, res) => {
   }
 
   try {
-    // 2. Create reminder
     const newReminder = await Reminder.create({
       time,
       activity,
@@ -59,13 +60,11 @@ router.put("/:id", authenticateToken, async (req, res) => {
   const { time, activity, recurrence, status } = req.body;
 
   try {
-    // 1. Find reminder by ID
     const reminder = await Reminder.findByPk(id);
     if (!reminder) {
       return res.status(404).json({ message: "Reminder not found" });
     }
 
-    // 2. Update reminder
     reminder.time = time || reminder.time;
     reminder.activity = activity || reminder.activity;
     reminder.recurrence = recurrence || reminder.recurrence;
@@ -88,13 +87,11 @@ router.delete("/:id", authenticateToken, async (req, res) => {
   const { id } = req.params;
 
   try {
-    // 1. Find reminder by ID
     const reminder = await Reminder.findByPk(id);
     if (!reminder) {
       return res.status(404).json({ message: "Reminder not found" });
     }
 
-    // 2. Delete reminder
     await reminder.destroy();
     return res.status(200).json({ message: "Reminder deleted successfully" });
   } catch (err) {

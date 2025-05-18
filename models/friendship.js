@@ -1,5 +1,11 @@
 module.exports = (sequelize, DataTypes) => {
   const Friendship = sequelize.define("Friendship", {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
+    },
     userId1: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -18,5 +24,15 @@ module.exports = (sequelize, DataTypes) => {
     },
   });
 
+  Friendship.associate = (models) => {
+    Friendship.belongsTo(models.User, {
+      as: "user1Details",
+      foreignKey: "userId1",
+    });
+    Friendship.belongsTo(models.User, {
+      as: "user2Details",
+      foreignKey: "userId2",
+    });
+  };
   return Friendship;
 };

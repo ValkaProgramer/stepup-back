@@ -12,6 +12,21 @@ module.exports = (sequelize, DataTypes) => {
     height: DataTypes.FLOAT,
     weight: DataTypes.FLOAT,
     preferences: DataTypes.JSON, // optional: for storing settings
+    email: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        isEmail: true,
+      },
+    },
+    photo: {
+      type: DataTypes.STRING,
+      allowNull: true, 
+    },
+    bio: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
   });
 
   User.associate = (models) => {
